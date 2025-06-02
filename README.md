@@ -38,7 +38,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## list of installs
 1. nextjs
+npm install react react-dom @types/react @types/react-dom
 2. emailjs
 3. cloudinary
+npm install next-cloudinary
 4. konva
+npm install react-konva konva
 5. firebase
