@@ -45,3 +45,4 @@ npm install next-cloudinary
 4. konva
 npm install react-konva konva
 5. firebase
+6. npm install next-auth
