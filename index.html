@@ -7,21 +7,21 @@
     <title>Automated Certification Management System</title>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen bg-white">
-    <div class="text-4xl font-bold mb-8 text-gray-800">
+    <div class="text-4xl font-bold mb-24 text-gray-800">
         Automated Certification Management System
     </div>
     <div class="w-full max-w-md">
         <div class="bg-gray-300 rounded-xl shadow-lg p-8 w-full max-w-md mx-auto">
-            <form class="space-y-6">
+            <form class="space-y-6" onsubmit="event.preventDefault(); window.location.href='generate.html';">
                 <div>
                     <label for="email" class="block text-center text-xl font-medium">Email</label>
-                    <input type="email" id="email" required
-                        class="mt-2 w-full px-4 py-2 bg-gray-300 border-b border-gray-400 focus:outline-none">
+                    <input type="email" id="email"
+                        class="mt-2 w-full px-4 py-2 bg-gray-300 border-b border-gray-400 focus:outline-none text-center">
                 </div>
                 <div>
                     <label for="password" class="block text-center text-xl font-medium">Password</label>
-                    <input type="password" id="password" required
-                        class="mt-2 w-full px-4 py-2 bg-gray-300 border-b border-gray-400 focus:outline-none">
+                    <input type="password" id="password"
+                        class="mt-2 w-full px-4 py-2 bg-gray-300 border-b border-gray-400 focus:outline-none text-center">
                 </div>
                 <div class="flex justify-center pt-4">
                     <button type="submit"
