@@ -14,11 +14,10 @@ function getEventTitle() {
 }
 
 // Helper to create a question div
-function createQuestionDiv({ id = "", text = "", type = "text" } = {}) {
+function createQuestionDiv({ text = "", type = "text" } = {}) {
     questionCount++;
     const questionDiv = document.createElement("div");
     questionDiv.className = "flex items-start gap-4";
-    questionDiv.dataset.id = id || questionCount;
     questionDiv.innerHTML = `
         <input type="text" name="question" value="${text}" placeholder="Enter your question" class="flex-1 p-2 border border-gray-300 bg-white rounded-xl shadow-lg" />
         <select name="type" class="p-2 border border-gray-300 rounded-xl bg-white shadow-lg">
@@ -30,21 +29,38 @@ function createQuestionDiv({ id = "", text = "", type = "text" } = {}) {
     form.appendChild(questionDiv);
 }
 
+// Debounce helper
+function debounce(fn, delay) {
+    let timer = null;
+    return function(...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), delay);
+    };
+}
+
 // Fetch and display all questions for the current event from Firestore
 async function displayQuestionsFromFirebase() {
     form.innerHTML = "";
     questionCount = 0;
     const eventTitle = getEventTitle();
-    if (!eventTitle) return;
+    console.log("Event title input value:", eventTitle);
+    if (!eventTitle || eventTitle.length < 3) return;
 
-    const snapshot = await db.collection("events").doc(eventTitle).collection("questions")
-        .orderBy("createdAt", "asc")
-        .get();
-
-    snapshot.forEach(doc => {
+    try {
+        console.log("Fetching questions for event:", eventTitle);
+        const doc = await db.collection("events").doc(eventTitle).get();
+        if (!doc.exists) {
+            console.log("No event found for:", eventTitle);
+            return;
+        }
         const data = doc.data();
-        createQuestionDiv({ id: doc.id, text: data.text, type: data.type || "text" });
-    });
+        const questions = data.questions || [];
+        questions.forEach(q => createQuestionDiv({ text: q.text, type: q.type || "text" }));
+    } catch (error) {
+        console.error("Error fetching questions:", error);
+        output.classList.remove("hidden");
+        output.textContent = `Error fetching from Firebase: ${error.message}`;
+    }
 }
 
 // Call on page load and when event title changes
@@ -61,23 +77,10 @@ document.getElementById("addQuestionBtn").addEventListener("click", () => {
     createQuestionDiv();
 });
 
-form.addEventListener("click", async (e) => {
+form.addEventListener("click", (e) => {
     if (e.target.classList.contains("remove-btn")) {
         const questionDiv = e.target.closest("div");
-        const docId = questionDiv.dataset.id;
         questionDiv.remove();
-
-        // Remove from Firestore if it exists in DB
-        const eventTitle = getEventTitle();
-        if (docId && eventTitle && !isNaN(docId) === false) {
-            try {
-                await db.collection("events").doc(eventTitle).collection("questions").doc(docId).delete();
-                await displayQuestionsFromFirebase();
-            } catch (error) {
-                output.classList.remove("hidden");
-                output.textContent = `Error removing from Firebase: ${error.message}`;
-            }
-        }
     }
 });
 
@@ -87,38 +90,31 @@ document.getElementById("saveFormBtn").addEventListener("click", async () => {
         alert("Please enter an event title before saving.");
         return;
     }
-    const questionDivs = form.querySelectorAll("div[data-id]");
+    const questionDivs = form.querySelectorAll("div");
     output.classList.remove("hidden");
-    let results = [];
+    let questions = [];
 
     for (const div of questionDivs) {
         const input = div.querySelector("input[name='question']");
         const select = div.querySelector("select[name='type']");
         const questionText = input.value.trim();
         const questionType = select.value;
-        const docId = div.dataset.id;
 
         if (questionText) {
-            const payload = {
+            questions.push({
                 text: questionText,
                 type: questionType,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-            try {
-                if (isNaN(docId) === false) {
-                    // New question, add to Firestore
-                    await db.collection("events").doc(eventTitle).collection("questions").add(payload);
-                } else {
-                    // Existing question, update in Firestore
-                    await db.collection("events").doc(eventTitle).collection("questions").doc(docId).set(payload, { merge: true });
-                }
-                results.push(payload);
-            } catch (error) {
-                output.textContent = `Error saving to Firebase: ${error.message}`;
-            }
+                createdAt: new Date().toISOString()
+            });
         }
     }
 
-    output.textContent = JSON.stringify(results, null, 2) + "\n\nQuestions saved to Firebase!";
+    try {
+        await db.collection("events").doc(eventTitle).set({ questions }, { merge: true });
+        output.textContent = JSON.stringify(questions, null, 2) + "\n\nQuestions saved to Firebase!";
+    } catch (error) {
+        output.textContent = `Error saving to Firebase: ${error.message}`;
+    }
+
     await displayQuestionsFromFirebase();
 });
