@@ -33,13 +33,24 @@ async function loadFeedbackForm() {
         return;
     }
 
-    // Render all questions as input fields
+    // Render all questions as input fields or rating radios
     allQuestions.forEach((q, idx) => {
         const div = document.createElement("div");
         div.className = "mb-4";
         div.innerHTML = `
             <label class="block text-lg font-medium mb-2">${q.text}</label>
-            <input type="text" name="answer${idx + 1}" class="w-full px-4 py-2 border border-gray-400 rounded-xl shadow-xl focus:outline-none" />
+            ${
+                q.type === "rating"
+                ? `<div class="flex gap-4">
+                        ${[1,2,3,4,5].map(num => `
+                            <label class="flex flex-col items-center">
+                                <input type="radio" name="answer${idx + 1}" value="${num}" class="form-radio text-blue-600" />
+                                <span>${num}</span>
+                            </label>
+                        `).join('')}
+                   </div>`
+                : `<input type="text" name="answer${idx + 1}" class="w-full px-4 py-2 border border-gray-400 rounded-xl shadow-xl focus:outline-none" />`
+            }
         `;
         formContainer.appendChild(div);
     });

@@ -7,6 +7,23 @@ let questionCount = 0;
 const form = document.getElementById("questionForm");
 const output = document.getElementById("output");
 
+// Helper to create a question div
+function createQuestionDiv({ text = "", type = "text" } = {}) {
+    questionCount++;
+    const questionDiv = document.createElement("div");
+    questionDiv.className = "flex items-start gap-4";
+    questionDiv.dataset.id = questionCount;
+    questionDiv.innerHTML = `
+        <input type="text" name="question" value="${text}" placeholder="Enter your question" class="flex-1 p-2 border border-gray-300 bg-white rounded-xl shadow-lg" />
+        <select name="type" class="p-2 border border-gray-300 rounded-xl bg-white shadow-lg">
+            <option value="text"${type === "text" ? " selected" : ""}>Text</option>
+            <option value="rating"${type === "rating" ? " selected" : ""}>Rating (1-5)</option>
+        </select>
+        <button type="button" class="remove-btn text-red-600 hover:underline">Remove</button>
+    `;
+    form.appendChild(questionDiv);
+}
+
 // Fetch and display all questions from all feedback forms in Firestore
 async function displayQuestionsFromFirebase() {
     // Clear form first
@@ -26,15 +43,7 @@ async function displayQuestionsFromFirebase() {
     });
 
     allQuestions.forEach(q => {
-        questionCount++;
-        const questionDiv = document.createElement("div");
-        questionDiv.className = "flex items-start gap-4";
-        questionDiv.dataset.id = questionCount;
-        questionDiv.innerHTML = `
-            <input type="text" name="question" value="${q.text}" class="flex-1 p-2 border border-gray-300 bg-white rounded-xl shadow-lg" />
-            <button type="button" class="remove-btn text-red-600 hover:underline">Remove</button>
-        `;
-        form.appendChild(questionDiv);
+        createQuestionDiv({ text: q.text, type: q.type || "text" });
     });
 }
 
@@ -42,18 +51,7 @@ async function displayQuestionsFromFirebase() {
 window.addEventListener("DOMContentLoaded", displayQuestionsFromFirebase);
 
 document.getElementById("addQuestionBtn").addEventListener("click", () => {
-    questionCount++;
-
-    const questionDiv = document.createElement("div");
-    questionDiv.className = "flex items-start gap-4";
-    questionDiv.dataset.id = questionCount;
-
-    questionDiv.innerHTML = `
-    <input type="text" name="question" placeholder="Enter your question" class="flex-1 p-2 border border-gray-300 bg-white rounded-xl shadow-lg" />
-    <button type="button" class="remove-btn text-red-600 hover:underline">Remove</button>
-    `;
-
-    form.appendChild(questionDiv);
+    createQuestionDiv();
 });
 
 form.addEventListener("click", (e) => {
@@ -64,12 +62,15 @@ form.addEventListener("click", (e) => {
 
 document.getElementById("saveFormBtn").addEventListener("click", async () => {
     const questions = [];
-    const inputs = form.querySelectorAll("input[name='question']");
+    const questionDivs = form.querySelectorAll("div[data-id]");
 
-    inputs.forEach((input, index) => {
+    questionDivs.forEach((div, index) => {
+        const input = div.querySelector("input[name='question']");
+        const select = div.querySelector("select[name='type']");
         const questionText = input.value.trim();
+        const questionType = select.value;
         if (questionText) {
-            questions.push({ id: index + 1, text: questionText });
+            questions.push({ id: index + 1, text: questionText, type: questionType });
         }
     });
 
