@@ -30,6 +30,14 @@
     <!-- div for feedback form` -->
     <div id="feedbackFormContainer" class="feedback-form bg-gray-300 h-full w-full p-10 rounded-xl shadow-lg mt-10">
         <h1 class="flex justify-center text-4xl">Questions</h1>
+        <!-- Event selection dropdown -->
+        <div class="mb-6 flex flex-col items-center">
+            <label for="eventSelect" class="text-lg font-medium mb-2">Select Event</label>
+            <select id="eventSelect" class="w-1/2 px-4 py-2 border border-gray-400 rounded-xl shadow focus:outline-none">
+                <option value="">-- Choose an event --</option>
+                <!-- Options will be populated dynamically -->
+            </select>
+        </div>
         <!-- forms will be dynamically generated here -->
         <form id="dynamicFeedbackForm" class="space-y-4 mt-6"></form>
     </div>

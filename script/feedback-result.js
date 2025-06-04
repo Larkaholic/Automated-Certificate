@@ -6,6 +6,28 @@ const db = firebase.firestore();
 const eventSelect = document.getElementById("eventSelect");
 const resultsContainer = document.getElementById("resultsContainer");
 
+// Populate event dropdown
+async function populateEventDropdown() {
+    if (!eventSelect) return;
+
+    eventSelect.innerHTML = `<option value="">-- Select an event --</option>`;
+
+    const snapshot = await db.collection("events").orderBy("createdAt", "asc").get();
+
+    if (snapshot.empty) {
+        eventSelect.innerHTML = `<option value="">No events found</option>`;
+        return;
+    }
+
+    snapshot.forEach(doc => {
+        const data = doc.data();
+        const option = document.createElement("option");
+        option.value = doc.id;
+        option.textContent = data.name || `Event (${doc.id})`;
+        eventSelect.appendChild(option);
+    });
+}
+
 // Fetch all event titles and display all events, questions, and answers
 async function loadEventsAndResults() {
     const eventsSnapshot = await db.collection("events").get();
@@ -196,4 +218,7 @@ eventSelect.addEventListener("change", async (e) => {
     await displayResultsForEvent(eventTitle);
 });
 
-window.addEventListener("DOMContentLoaded", loadEventsAndResults);
+window.addEventListener("DOMContentLoaded", async () => {
+    await populateEventDropdown();
+    await loadEventsAndResults();
+});
