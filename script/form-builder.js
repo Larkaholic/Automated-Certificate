@@ -7,6 +7,40 @@ let questionCount = 0;
 const form = document.getElementById("questionForm");
 const output = document.getElementById("output");
 
+// Fetch and display all questions from all feedback forms in Firestore
+async function displayQuestionsFromFirebase() {
+    // Clear form first
+    form.innerHTML = "";
+    questionCount = 0;
+
+    const snapshot = await db.collection("feedbackForms")
+        .orderBy("createdAt", "desc")
+        .get();
+
+    let allQuestions = [];
+    snapshot.forEach(doc => {
+        const data = doc.data();
+        if (Array.isArray(data.questions)) {
+            allQuestions = allQuestions.concat(data.questions);
+        }
+    });
+
+    allQuestions.forEach(q => {
+        questionCount++;
+        const questionDiv = document.createElement("div");
+        questionDiv.className = "flex items-start gap-4";
+        questionDiv.dataset.id = questionCount;
+        questionDiv.innerHTML = `
+            <input type="text" name="question" value="${q.text}" class="flex-1 p-2 border border-gray-300 bg-white rounded-xl shadow-lg" />
+            <button type="button" class="remove-btn text-red-600 hover:underline">Remove</button>
+        `;
+        form.appendChild(questionDiv);
+    });
+}
+
+// Call on page load
+window.addEventListener("DOMContentLoaded", displayQuestionsFromFirebase);
+
 document.getElementById("addQuestionBtn").addEventListener("click", () => {
     questionCount++;
 
@@ -24,7 +58,7 @@ document.getElementById("addQuestionBtn").addEventListener("click", () => {
 
 form.addEventListener("click", (e) => {
     if (e.target.classList.contains("remove-btn")) {
-    e.target.closest("div").remove();
+        e.target.closest("div").remove();
     }
 });
 
@@ -52,6 +86,8 @@ document.getElementById("saveFormBtn").addEventListener("click", async () => {
         try {
             await db.collection("feedbackForms").add(payload);
             output.textContent += "\n\nFeedback form saved to Firebase!";
+            // Refresh questions from Firebase after saving
+            await displayQuestionsFromFirebase();
         } catch (error) {
             output.textContent += `\n\nError saving to Firebase: ${error.message}\n${JSON.stringify(error)}`;
             console.error("Firestore error:", error);

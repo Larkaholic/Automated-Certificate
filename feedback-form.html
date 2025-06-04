@@ -7,12 +7,13 @@
     <title>Feedback Form</title>
 </head>
 <body>
-    <div class="text-4xl">
+    <div class="text-4xl p-4 bg-gray-300 text-center font-bold rounded-xl shadow-lg">
         Feedback form
     </div>
 
     <!-- div for credentials -->
     <div class="credentials bg-gray-300 h-full w-full p-10 rounded-xl shadow-lg mt-10">
+        <h1 class="flex justify-center text-4xl mb-10">Credentials</h1>
         <form action="">
             <div class="mb-4">
                 <label for="name" class="block text-center text-xl font-medium">Name</label>
@@ -27,10 +28,15 @@
     </div>
 
     <!-- div for feedback form` -->
-    <div class="feedback-form bg-gray-300 h-full w-full p-10 rounded-xl shadow-lg mt-10">
+    <div id="feedbackFormContainer" class="feedback-form bg-gray-300 h-full w-full p-10 rounded-xl shadow-lg mt-10">
         <h1 class="flex justify-center text-4xl">Questions</h1>
         <!-- forms will be dynamically generated here -->
+        <form id="dynamicFeedbackForm" class="space-y-4 mt-6"></form>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="./script/firebase.js" type="module"></script>
+    <script src="./script/feedback-from.js" type="module"></script>
 </body>
 </html>
