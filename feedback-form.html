@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Feedback Form</title>
+</head>
+<body>
+    <div class="text-4xl">
+        Feedback form
+    </div>
+
+    <!-- div for credentials -->
+    <div class="credentials bg-gray-300 h-full w-full p-10 rounded-xl shadow-lg mt-10">
+        <form action="">
+            <div class="mb-4">
+                <label for="name" class="block text-center text-xl font-medium">Name</label>
+                <input type="text" id="name" class="mt-2 w-full px-4 py-2 bg-gray-300 border-b border-gray-400 focus:outline-none text-center">
+            </div>
+
+            <div class="mb-4">
+                <label for="email" class="block text-center text-xl font-medium">Email</label>
+                <input type="email" id="email" class="mt-2 w-full px-4 py-2 bg-gray-300 border-b border-gray-400 focus:outline-none text-center">
+            </div>
+        </form>
+    </div>
+
+    <!-- div for feedback form` -->
+    <div class="feedback-form bg-gray-300 h-full w-full p-10 rounded-xl shadow-lg mt-10">
+        <h1 class="flex justify-center text-4xl">Questions</h1>
+        <!-- forms will be dynamically generated here -->
+    </div>
+
+</body>
+</html>
