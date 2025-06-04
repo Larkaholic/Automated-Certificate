@@ -6,13 +6,19 @@ const db = firebase.firestore();
 let questionCount = 0;
 const form = document.getElementById("questionForm");
 const output = document.getElementById("output");
+const eventTitleInput = document.getElementById("eventTitle");
+
+// Helper to get event title (trimmed)
+function getEventTitle() {
+    return eventTitleInput ? eventTitleInput.value.trim() : "";
+}
 
 // Helper to create a question div
-function createQuestionDiv({ text = "", type = "text" } = {}) {
+function createQuestionDiv({ id = "", text = "", type = "text" } = {}) {
     questionCount++;
     const questionDiv = document.createElement("div");
     questionDiv.className = "flex items-start gap-4";
-    questionDiv.dataset.id = questionCount;
+    questionDiv.dataset.id = id || questionCount;
     questionDiv.innerHTML = `
         <input type="text" name="question" value="${text}" placeholder="Enter your question" class="flex-1 p-2 border border-gray-300 bg-white rounded-xl shadow-lg" />
         <select name="type" class="p-2 border border-gray-300 rounded-xl bg-white shadow-lg">
@@ -24,76 +30,95 @@ function createQuestionDiv({ text = "", type = "text" } = {}) {
     form.appendChild(questionDiv);
 }
 
-// Fetch and display all questions from all feedback forms in Firestore
+// Fetch and display all questions for the current event from Firestore
 async function displayQuestionsFromFirebase() {
-    // Clear form first
     form.innerHTML = "";
     questionCount = 0;
+    const eventTitle = getEventTitle();
+    if (!eventTitle) return;
 
-    const snapshot = await db.collection("feedbackForms")
-        .orderBy("createdAt", "desc")
+    const snapshot = await db.collection("events").doc(eventTitle).collection("questions")
+        .orderBy("createdAt", "asc")
         .get();
 
-    let allQuestions = [];
     snapshot.forEach(doc => {
         const data = doc.data();
-        if (Array.isArray(data.questions)) {
-            allQuestions = allQuestions.concat(data.questions);
-        }
-    });
-
-    allQuestions.forEach(q => {
-        createQuestionDiv({ text: q.text, type: q.type || "text" });
+        createQuestionDiv({ id: doc.id, text: data.text, type: data.type || "text" });
     });
 }
 
-// Call on page load
+// Call on page load and when event title changes
 window.addEventListener("DOMContentLoaded", displayQuestionsFromFirebase);
+if (eventTitleInput) {
+    eventTitleInput.addEventListener("input", displayQuestionsFromFirebase);
+}
 
 document.getElementById("addQuestionBtn").addEventListener("click", () => {
+    if (!getEventTitle()) {
+        alert("Please enter an event title first.");
+        return;
+    }
     createQuestionDiv();
 });
 
-form.addEventListener("click", (e) => {
+form.addEventListener("click", async (e) => {
     if (e.target.classList.contains("remove-btn")) {
-        e.target.closest("div").remove();
+        const questionDiv = e.target.closest("div");
+        const docId = questionDiv.dataset.id;
+        questionDiv.remove();
+
+        // Remove from Firestore if it exists in DB
+        const eventTitle = getEventTitle();
+        if (docId && eventTitle && !isNaN(docId) === false) {
+            try {
+                await db.collection("events").doc(eventTitle).collection("questions").doc(docId).delete();
+                await displayQuestionsFromFirebase();
+            } catch (error) {
+                output.classList.remove("hidden");
+                output.textContent = `Error removing from Firebase: ${error.message}`;
+            }
+        }
     }
 });
 
 document.getElementById("saveFormBtn").addEventListener("click", async () => {
-    const questions = [];
+    const eventTitle = getEventTitle();
+    if (!eventTitle) {
+        alert("Please enter an event title before saving.");
+        return;
+    }
     const questionDivs = form.querySelectorAll("div[data-id]");
+    output.classList.remove("hidden");
+    let results = [];
 
-    questionDivs.forEach((div, index) => {
+    for (const div of questionDivs) {
         const input = div.querySelector("input[name='question']");
         const select = div.querySelector("select[name='type']");
         const questionText = input.value.trim();
         const questionType = select.value;
+        const docId = div.dataset.id;
+
         if (questionText) {
-            questions.push({ id: index + 1, text: questionText, type: questionType });
+            const payload = {
+                text: questionText,
+                type: questionType,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            try {
+                if (isNaN(docId) === false) {
+                    // New question, add to Firestore
+                    await db.collection("events").doc(eventTitle).collection("questions").add(payload);
+                } else {
+                    // Existing question, update in Firestore
+                    await db.collection("events").doc(eventTitle).collection("questions").doc(docId).set(payload, { merge: true });
+                }
+                results.push(payload);
+            } catch (error) {
+                output.textContent = `Error saving to Firebase: ${error.message}`;
+            }
         }
-    });
-
-    output.classList.remove("hidden");
-    output.textContent = JSON.stringify(questions, null, 2);
-
-    // Store questions as a feedback form in Firestore
-    if (questions.length > 0) {
-        const payload = {
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            questions: questions
-        };
-        console.log("Firestore payload:", payload);
-        try {
-            await db.collection("feedbackForms").add(payload);
-            output.textContent += "\n\nFeedback form saved to Firebase!";
-            // Refresh questions from Firebase after saving
-            await displayQuestionsFromFirebase();
-        } catch (error) {
-            output.textContent += `\n\nError saving to Firebase: ${error.message}\n${JSON.stringify(error)}`;
-            console.error("Firestore error:", error);
-        }
-    } else {
-        output.textContent += "\n\nNo questions to save!";
     }
+
+    output.textContent = JSON.stringify(results, null, 2) + "\n\nQuestions saved to Firebase!";
+    await displayQuestionsFromFirebase();
 });

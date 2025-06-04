@@ -7,34 +7,21 @@ async function loadFeedbackForm() {
     const formContainer = document.getElementById("dynamicFeedbackForm");
     if (!formContainer) return;
 
-    // Get all feedback forms, ordered by creation date
-    const snapshot = await db.collection("feedbackForms")
-        .orderBy("createdAt", "desc")
+    // Get all questions, ordered by creation date
+    const snapshot = await db.collection("questions")
+        .orderBy("createdAt", "asc")
         .get();
-
-    if (snapshot.empty) {
-        formContainer.innerHTML = "<div class='text-center text-red-600'>No feedback forms found.</div>";
-        return;
-    }
 
     formContainer.innerHTML = ""; // Clear previous content
 
-    // Collect all questions from all forms
-    let allQuestions = [];
-    snapshot.forEach(doc => {
-        const data = doc.data();
-        if (Array.isArray(data.questions)) {
-            allQuestions = allQuestions.concat(data.questions);
-        }
-    });
-
-    if (allQuestions.length === 0) {
-        formContainer.innerHTML = "<div class='text-center text-red-600'>No questions found in any feedback form.</div>";
+    if (snapshot.empty) {
+        formContainer.innerHTML = "<div class='text-center text-red-600'>No questions found.</div>";
         return;
     }
 
     // Render all questions as input fields or rating radios
-    allQuestions.forEach((q, idx) => {
+    snapshot.forEach((doc, idx) => {
+        const q = doc.data();
         const div = document.createElement("div");
         div.className = "mb-4";
         div.innerHTML = `
