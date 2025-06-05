@@ -2,11 +2,19 @@ let stage, layer, nameText, bgImageObj;
 const containerWidth = 800;
 const containerHeight = 600;
 
+function getResponsiveSize() {
+    const container = document.getElementById('konvaContainer');
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+    return { width, height };
+}
+
 function initKonva(imageSrc) {
+    const { width, height } = getResponsiveSize();
     stage = new Konva.Stage({
         container: 'konvaContainer',
-        width: containerWidth,
-        height: containerHeight,
+        width,
+        height,
     });
     layer = new Konva.Layer();
     stage.add(layer);
@@ -16,8 +24,8 @@ function initKonva(imageSrc) {
     bgImageObj.onload = function() {
         const bg = new Konva.Image({
             image: bgImageObj,
-            width: containerWidth,
-            height: containerHeight,
+            width: width,
+            height: height,
             listening: false
         });
         layer.add(bg);
@@ -25,9 +33,9 @@ function initKonva(imageSrc) {
         // Add draggable name placeholder
         nameText = new Konva.Text({
             text: '{{name}}',
-            x: containerWidth / 2 - 100,
-            y: containerHeight / 2 - 20,
-            fontSize: 36,
+            x: width / 2 - 100,
+            y: height / 2 - 20,
+            fontSize: Math.max(18, Math.floor(height / 16)),
             fontFamily: 'Arial',
             fill: 'black',
             draggable: true,
@@ -53,6 +61,13 @@ function initKonva(imageSrc) {
     };
     bgImageObj.src = imageSrc;
 }
+
+window.addEventListener('resize', () => {
+    if (!bgImageObj || !bgImageObj.src) return;
+    // Re-initialize Konva with new size
+    if (stage) stage.destroy();
+    initKonva(bgImageObj.src);
+});
 
 document.getElementById('templateUpload').addEventListener('change', function(e) {
     const file = e.target.files[0];
