@@ -1,5 +1,35 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+body {
+    font-family: Monstserrat, serif;
+    font-size: larger;
+}
+
+.glass {
+    background: rgba(255, 255, 255, 0.034);
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(172, 172, 172, 1);
+    height: 30rem;
+    width: 40rem;
+}
+
+.inttologo {
+    width: 10rem;
+    height: fit-content;
+}
+
+.gradient-border {
+    border: 2px solid transparent;
+    background-clip: padding-box, border-box;
+    background-origin: padding-box, border-box;
+    background-image:
+        linear-gradient(120deg, #101318 0%, #01702f 120%),
+        linear-gradient(120deg, #101318 0%, #01702f 120%);
+}
+
+.custom-gradient-border {
+    border: 2px solid;
+    border-image: linear-gradient(120deg, #101318 0%, #01702f 100%);
+    border-image-slice: 1;
 }
