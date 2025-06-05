@@ -111,6 +111,9 @@ document.getElementById("saveFormBtn").addEventListener("click", async () => {
     try {
         await db.collection("events").doc(eventTitle).set({ questions }, { merge: true });
         output.textContent = JSON.stringify(questions, null, 2) + "\n\nQuestions saved to Firebase!";
+        // Show attendee form link
+        const attendeeFormUrl = `feedback-form-User.html?event=${encodeURIComponent(eventTitle)}`;
+        output.innerHTML += `\n\n<a href="${attendeeFormUrl}" target="_blank" class="text-blue-600 underline">Open attendee feedback form</a>`;
     } catch (error) {
         output.textContent = `Error saving to Firebase: ${error.message}`;
     }
