@@ -43,7 +43,6 @@ async function displayQuestionsFromFirebase() {
     form.innerHTML = "";
     questionCount = 0;
     const eventTitle = getEventTitle();
-    console.log("Event title input value:", eventTitle);
     if (!eventTitle || eventTitle.length < 3) return;
 
     try {
