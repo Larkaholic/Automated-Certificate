@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Certificate Template</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+    .certificate-container {
+      max-width: 800px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .certificate-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .certificate-header h1 {
+      font-size: 28px;
+      margin: 0;
+    }
+    .certificate-header p {
+      font-size: 18px;
+      color: #666;
+    }
+    .certificate-content {
+      font-size: 16px;
+      line-height: 1.5;
+      color: #333;
+    }
+    .certificate-content span {
+      font-weight: bold;
+      color: #000;
+    }
+    .certificate-footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="certificate-container">
+    <div class="certificate-header">
+      <h1>Certificate of Completion</h1>
+      <p>This is to certify that</p>
+    </div>
+    <div class="certificate-content">
+      <p class="attendee-name">{{name}}</p>
+      <p>has successfully completed the course</p>
+      <p><strong>{{courseTitle}}</strong></p>
+      <p>on <span class="completion-date">{{date}}</span></p>
+    </div>
+    <div class="certificate-footer">
+      <p>Instructor: {{instructor}}</p>
+      <p>Signature: __________________</p>
+    </div>
+  </div>
+</body>
+</html>
