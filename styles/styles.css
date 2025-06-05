@@ -14,6 +14,15 @@ body {
     width: 40rem;
 }
 
+.glass-buttons {
+    background: rgba(255, 255, 255, 0.034);
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(172, 172, 172, 1);
+}
+
 .inttologo {
     width: 10rem;
     height: fit-content;
