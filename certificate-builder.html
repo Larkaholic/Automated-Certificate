@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Certificate Builder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/konva@9.2.0/konva.min.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center py-8">
+  <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-3xl">
+    <h1 class="text-2xl font-bold mb-4">Certificate Template Builder</h1>
+    <div class="mb-4">
+      <label class="block font-medium mb-2">Upload Certificate Template (PNG/JPG):</label>
+      <input type="file" id="templateUpload" accept="image/png, image/jpeg" class="mb-2"/>
+    </div>
+    <div id="konvaContainer" class="border rounded-xl bg-gray-200 flex justify-center items-center" style="width:800px; height:600px;">
+      <!-- Konva canvas will be rendered here -->
+    </div>
+    <div class="mt-4 flex gap-4">
+      <button id="savePlacementBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800">Save Placement</button>
+      <span id="saveStatus" class="text-green-700"></span>
+    </div>
+  </div>
+  <script type="module" src="./script/certificate-builder.js"></script>
+</body>
+</html>
