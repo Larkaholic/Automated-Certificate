@@ -1,14 +1,16 @@
 body {
     font-family: Monstserrat, serif;
     font-size: larger;
+    background: #00bf50;
+    background: linear-gradient(231deg,rgb(0, 206, 0) 0%, rgb(0, 114, 48) 35%, rgba(0, 71, 2, 1) 50%, rgba(0, 0, 0, 1) 91%);
 }
 
 .glass {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(6.5px);
     -webkit-backdrop-filter: blur(6.5px);
-    border: 1.5px solid rgba(172, 172, 172, 1);
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
     height: 30rem;
     width: 40rem;
 }
@@ -37,7 +39,5 @@ body {
 }
 
 .custom-gradient-border {
-    border: 2px solid;
-    border-image: linear-gradient(120deg, #101318 0%, #01702f 100%);
-    border-image-slice: 1;
+    border: 3px solid;
 }
