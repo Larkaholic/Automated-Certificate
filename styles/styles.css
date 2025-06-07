@@ -5,6 +5,7 @@ body {
     font-size: larger;
     background: #00bf50;
     background: linear-gradient(231deg,rgb(0, 206, 0) 0%, rgb(0, 114, 48) 35%, rgba(0, 71, 2, 1) 50%, rgba(0, 0, 0, 1) 91%);
+    z-index: 0;
 }
 
 .glass {
@@ -42,4 +43,15 @@ body {
 
 .custom-gradient-border {
     border: 3px solid;
+}
+
+.sideLogoBottomLeft {
+    position: fixed;
+    left: 2rem;
+    bottom: 2rem;
+    width: 200px;
+    height: auto;
+    z-index: 20;
+    transform: rotate(-90deg);
+    opacity: 0.95; 
 }
