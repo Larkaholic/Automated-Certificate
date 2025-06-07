@@ -3,7 +3,7 @@
 body {
     font-family: poppins, sans-serif;
     font-size: 1.2rem;
-    background: #00bf50;
+    /* background: #00bf50; */
     background: linear-gradient(231deg,rgb(0, 123, 0) 0%, rgb(0, 81, 34) 35%, rgba(0, 71, 2, 1) 50%, rgba(0, 0, 0, 1) 91%);
     z-index: 0;
 }
@@ -30,19 +30,6 @@ body {
 .inttologo {
     width: 10rem;
     height: fit-content;
-}
-
-.gradient-border {
-    border: 2px solid transparent;
-    background-clip: padding-box, border-box;
-    background-origin: padding-box, border-box;
-    background-image:
-        linear-gradient(120deg, #101318 0%, #01702f 120%),
-        linear-gradient(120deg, #101318 0%, #01702f 120%);
-}
-
-.custom-gradient-border {
-    border: 3px solid;
 }
 
 .sideLogoBottomLeft {
