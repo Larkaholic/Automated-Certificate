@@ -7,12 +7,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/styles/styles.css">
 </head>
-<body class="flex">
-  <div class="glass p-8 mx-auto mt-10 max-w-2xl rounded-xl shadow-lg">
-    <div>
-      <img src="/images/inttoLogo.png" alt="into logo" class="w-32 h-32 mx-auto mt-4 mb-6 bg-black">
+<body class="flex flex-row gap-5 mx-2">
+  <div class="glass p-8 mx-auto mt-10 max-w-96 rounded-xl">
+    <div class="flex mb-10">
+      <img src="/images/inttoLogo.png" alt="into logo" class="w-32 h-auto">
     </div>
-    <div class="">
+    <div class="flex flex-col gap-5 text-white">
       <h1 class="glass-buttons text-center">
         Custom Form Builder
       </h1>
@@ -23,9 +23,14 @@
         Feedback Form Preview
       </h1>
     </div>
+    <div class="flex justify-center mt-6">
+      <button class="glass-buttons text-white px-4 py-2 rounded hover:bg-gray-900">
+        <a href="/index.html">Logout</a>
+      </button>
+    </div>
   </div>
 
-  <div class="max-w-2xl mx-auto bg-gray-300 p-6 rounded-xl shadow-md mt-10">
+  <div class="glass max-w-2xl mx-auto bg-gray-300 p-6 rounded-xl shadow-md mt-10">
     <h1 class="text-2xl font-bold mb-4">Custom Form Builder</h1>
     <div class="mb-6">
       <label for="eventTitle" class="block text-xl font-bold mb-2">Event Title</label>
